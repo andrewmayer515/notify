@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/andrewmayer515/notify#readme",
   "dependencies": {
+    "dotenv": "^8.2.0",
     "puppeteer": "^7.0.1"
   },
   "devDependencies": {
