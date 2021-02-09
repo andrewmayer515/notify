@@ -1,26 +1,36 @@
+/* eslint-disable no-console */
 /* eslint-disable no-await-in-loop */
+
 import puppeteer from 'puppeteer';
 import nodemailer from 'nodemailer';
 
 require('dotenv').config();
 
 const openBrowser = async () => {
-  const browser = await puppeteer.launch();
-  return browser.newPage();
+  const browser = await puppeteer.launch({ headless: false });
+  const page = await browser.newPage();
+  await page.setViewport({
+    width: 1000,
+    height: 2000,
+    deviceScaleFactor: 1,
+  });
+
+  return page;
 };
 
 const searchLoop = async page => {
   let notFound = true;
   let firstPassthroughText = '';
 
+  // Determine if something changed
   while (notFound) {
     await new Promise(resolve => setTimeout(resolve, process.env.PING_DELAY * 1000));
     await page.goto(process.env.WEB_URL, { waitUntil: 'networkidle2' });
     await page.bringToFront();
 
     const elementText = await page.$eval(process.env.WEB_SELECTOR, el => el.textContent);
+    console.log(elementText);
 
-    // Determine if something has changed
     if (firstPassthroughText) {
       firstPassthroughText = elementText;
     }
@@ -28,25 +38,25 @@ const searchLoop = async page => {
     notFound = elementText === firstPassthroughText;
   }
 
-  await page.screenshot({ path: 'attachment.png' });
+  await page.screenshot({ path: 'screenshot.png' });
 };
 
 const sendNotification = async () => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS,
     },
   });
   const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: process.env.EMAIL_USER,
-    subject: '-- NOTIFY ALERT -- ',
-    text: 'Something has changed!',
+    from: process.env.GMAIL_USER,
+    to: process.env.GMAIL_USER,
+    subject: '-- NOTIFY -- ',
+    text: 'See attachment for details',
     attachments: [
       {
-        path: 'attachment.png',
+        path: 'screenshot.png',
       },
     ],
   };
@@ -55,13 +65,16 @@ const sendNotification = async () => {
   console.log(`Message sent: ${info.messageId}`);
 };
 
-const main = async () => {
-  const page = await openBrowser();
-  await searchLoop(page);
-  await sendNotification();
-
+const notify = async () => {
+  try {
+    const page = await openBrowser();
+    await searchLoop(page);
+    await sendNotification();
+  } catch (error) {
+    console.log(error.message);
+  }
   // End
   process.exit(0);
 };
 
-main();
+notify();
