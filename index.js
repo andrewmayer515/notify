@@ -25,10 +25,10 @@ const searchLoop = async page => {
   // Determine if something changed
   while (notFound) {
     await new Promise(resolve => setTimeout(resolve, process.env.PING_DELAY * 1000));
-    await page.goto(process.env.WEB_URL, { waitUntil: 'networkidle2' });
+    await page.goto(process.env.URL, { waitUntil: 'networkidle2' });
     await page.bringToFront();
 
-    const elementText = await page.$eval(process.env.WEB_SELECTOR, el => el.textContent);
+    const elementText = await page.$eval(process.env.CSS_SELECTOR, el => el.textContent);
     console.log(elementText);
 
     if (firstPassthroughText) {

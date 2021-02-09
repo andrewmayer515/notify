@@ -1,5 +1,7 @@
 # Notify
 
+Send an automated email when text on a website changes
+
 ## Setup
 ```
 $ git clone https://github.com/andrewmayer515/notify.git
@@ -8,13 +10,13 @@ $ npm i
 ```
 
 
-Create .env at root with the following structure:
+Create `.env` file at root with the following structure:
 ```
+URL=https://www.something.com/
+CSS_SELECTOR='.className'
+PING_DELAY=30
 GMAIL_USER=example@domain.com
 GMAIL_PASS=password
-PING_DELAY=30
-WEB_URL=https://www.something.com/
-WEB_SELECTOR='.className'
 ```
 
 Run with `npm start`
