@@ -20,22 +20,24 @@ const openBrowser = async () => {
 
 const searchLoop = async page => {
   let notFound = true;
-  let firstPassthroughText = '';
+  let originalText = '';
+  let fistPassFlag = true;
 
   // Determine if something changed
   while (notFound) {
     await new Promise(resolve => setTimeout(resolve, process.env.PING_DELAY * 1000));
-    await page.goto(process.env.URL, { waitUntil: 'networkidle2' });
+    await page.goto(process.env.URL, { waitUntil: 'load', timeout: 0 });
     await page.bringToFront();
 
     const elementText = await page.$eval(process.env.CSS_SELECTOR, el => el.textContent);
     console.log(elementText);
 
-    if (firstPassthroughText) {
-      firstPassthroughText = elementText;
+    if (fistPassFlag) {
+      originalText = elementText;
+      fistPassFlag = false;
     }
 
-    notFound = elementText === firstPassthroughText;
+    notFound = elementText === originalText;
   }
 
   await page.screenshot({ path: 'screenshot.png' });
