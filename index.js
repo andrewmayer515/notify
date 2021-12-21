@@ -14,7 +14,8 @@ const openBrowser = async () => {
     headless: false,
     executablePath: process.env.PI ? '/usr/bin/chromium-browser' : undefined,
   });
-  const page = await browser.newPage();
+  const [page] = await browser.pages();
+
   await page.setViewport({
     width: 1000,
     height: 2000,
