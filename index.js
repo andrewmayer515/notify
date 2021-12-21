@@ -10,7 +10,10 @@ import { format } from 'date-fns';
 require('dotenv').config();
 
 const openBrowser = async () => {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({
+    headless: false,
+    executablePath: process.env.PI ? '/usr/bin/chromium-browser' : undefined,
+  });
   const page = await browser.newPage();
   await page.setViewport({
     width: 1000,
