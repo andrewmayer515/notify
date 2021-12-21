@@ -3,6 +3,9 @@
 
 import puppeteer from 'puppeteer';
 import nodemailer from 'nodemailer';
+import { format } from 'date-fns';
+
+//---------------------------------------------------------------------
 
 require('dotenv').config();
 
@@ -30,7 +33,7 @@ const searchLoop = async page => {
     await page.bringToFront();
 
     const elementText = await page.$eval(process.env.CSS_SELECTOR, el => el.textContent);
-    console.log(elementText);
+    console.log(`${elementText} - ${format(new Date(), "MM/dd/yyyy '@' h:mm:ss a")}`);
 
     if (fistPassFlag) {
       originalText = elementText;
