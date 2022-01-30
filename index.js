@@ -58,11 +58,13 @@ const sendNotification = async () => {
       pass: process.env.GMAIL_PASS,
     },
   });
+
+  const emailList = process.env.EMAIL_LIST.split(', ');
   const mailOptions = {
     from: process.env.GMAIL_USER,
-    to: process.env.GMAIL_USER,
-    subject: '-- NOTIFY -- ',
-    text: 'See attachment for details',
+    to: emailList,
+    subject: '-- NOTIFY --',
+    text: `See attachment for details \n \n${process.env.URL}`,
     attachments: [
       {
         path: 'screenshot.png',

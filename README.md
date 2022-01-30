@@ -17,6 +17,7 @@ CSS_SELECTOR='.className'
 PING_DELAY=30
 GMAIL_USER=example@domain.com
 GMAIL_PASS=password
+EMAIL_LIST=example@domain.com, example@domain.com
 
 # optional
 PI=true # set when running on a rasperry pi
